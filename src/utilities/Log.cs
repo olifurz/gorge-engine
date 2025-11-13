@@ -1,14 +1,18 @@
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 public static class Log
 {
-    private static void Construct(string level, string message)
+    private static void Construct(string level, string message, string? callingClass = null)
     {
         string timestamp = DateTime.Now.ToString("yyy-MM-dd HH:mm:ss.fff");
 
-        var stackTrace = new StackTrace();
-        var callingMethod = stackTrace.GetFrame(2)?.GetMethod();
-        string? callingClass = callingMethod?.DeclaringType?.Name;
+        if (callingClass == null)
+        {
+            var stackTrace = new StackTrace();
+            var callingMethod = stackTrace.GetFrame(2)?.GetMethod();
+            callingClass = callingMethod?.DeclaringType?.Name;
+        }
 
         string entry = $"[{timestamp}] {level}: {callingClass}: {message}";
         Console.WriteLine(entry);
@@ -37,4 +41,24 @@ public static class Log
     {
         Construct("CRITICAL", message);
     }
+
+    [UnmanagedCallersOnly(CallConvs = new[] { typeof(System.Runtime.CompilerServices.CallConvCdecl) })]
+    public static unsafe void RaylibLogCallback(int logLevel, sbyte* text, sbyte* args)
+    {
+        string msg = Marshal.PtrToStringAnsi((IntPtr)text) ?? "";
+        string more = Marshal.PtrToStringAnsi((IntPtr)args) ?? "";
+        Construct(RaylibLogLevel(logLevel), msg, "Raylib");
+    }
+
+    static string RaylibLogLevel(int level) => level switch
+    {
+        1 => "TRACE",
+        2 => "DEBUG",
+        3 => "INFO",
+        4 => "WARNING",
+        5 => "ERROR",
+        6 => "FATAL",
+        _ => $"LEVEL({level})"
+    };
+
 }

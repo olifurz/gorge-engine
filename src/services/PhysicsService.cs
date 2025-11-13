@@ -26,6 +26,7 @@ public class PhysicsService : BaseService
     public override void Update()
     {
         base.Update();
+        if (workspace.Objects.Count == 0) return;
 
         world.Step(Raylib.GetFrameTime(), true);
 

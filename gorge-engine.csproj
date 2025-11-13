@@ -7,11 +7,13 @@
     <RuntimeIdentifiers>linux-x64;win-x64</RuntimeIdentifiers>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Jitter2" Version="2.7.4" />
     <PackageReference Include="Raylib-cs" Version="7.0.2" />
+    <EmbeddedResource Include="assets\**\*" />
   </ItemGroup>
 
 </Project>

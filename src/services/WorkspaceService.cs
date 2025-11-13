@@ -19,7 +19,7 @@ public class WorkspaceService : BaseService
         base.Start();
         physics = ServiceManager.GetService<PhysicsService>();
 
-        var baseplate = new Part(Part.PartType.Brick, Vector3.Zero, Quaternion.Zero, new Vector3(1, 1, 1));
+        var baseplate = new Part(Part.PartType.Brick, Vector3.Zero, Quaternion.Zero, new Vector3(16, 1, 16));
         baseplate.Name = "Baseplate";
         baseplate.Anchored = true;
         AddObject(baseplate);
