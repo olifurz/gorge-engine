@@ -1,5 +1,5 @@
 <div align="center">
-    <img src="/assets/logos/logo.svg" width="200"/>
+    <img src="/assets/logos/logo.svg" width="400"/>
     <h3>Gorge Engine</h3>
     <p>Open-sourced experimental ROBLOX clone</p>
 </div>
