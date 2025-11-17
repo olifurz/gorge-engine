@@ -9,6 +9,7 @@ public class Transform
     public Vector3 Position { get; internal set; }
     public Quaternion Rotation { get; internal set; }
     public Vector3 Scale { get; internal set; }
+    public bool Anchored = false;
 
     public event Action<Transform>? PositionChanged;
     public event Action<Transform>? RotationChanged;
@@ -68,50 +69,49 @@ public class Transform
     {
         if (Position != position)
         {
-            Position = position;
-            PositionChanged?.Invoke(this);
+            SetPosition(position);
         }
         if (Rotation != rotation)
         {
-            Rotation = rotation;
-            RotationChanged?.Invoke(this);
+            SetRotation(rotation);
         }
         if (Scale != scale)
         {
-            Scale = scale;
-            ScaleChanged?.Invoke(this);
+            SetScale(scale);
         }
     }
 
 
     public void SetPosition(Vector3 position)
     {
+        var state = Anchored;
+        Anchored = true;
         Position = position;
         PositionChanged?.Invoke(this);
+        Anchored = state;
     }
     public void SetPosition(float x, float y, float z)
     {
-        Position = new Vector3(x, y, z);
-        PositionChanged?.Invoke(this);
+        SetPosition(new Vector3(x, y, z));
     }
     public void SetRotation(Quaternion rotation)
     {
+        var state = Anchored;
         Rotation = rotation;
         RotationChanged?.Invoke(this);
-    }
-    public void SetScale(float x, float y, float z)
-    {
-        Scale = new Vector3(x, y, z);
-        ScaleChanged?.Invoke(this);
-    }
-    public void SetScale(float uniformScale)
-    {
-        Scale = new Vector3(uniformScale, uniformScale, uniformScale);
-        ScaleChanged?.Invoke(this);
+        Anchored = state;
     }
     public void SetScale(Vector3 scale)
     {
         Scale = scale;
         ScaleChanged?.Invoke(this);
+    }
+    public void SetScale(float x, float y, float z)
+    {
+        SetScale(new Vector3(x, y, z));
+    }
+    public void SetScale(float uniformScale)
+    {
+        SetScale(new Vector3(uniformScale, uniformScale, uniformScale));
     }
 }

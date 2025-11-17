@@ -15,7 +15,6 @@ public class GameObject
     public string Name = "Unnamed Object";
     public GameObject? Parent { get; internal set; }
     public List<GameObject> Children { get; internal set; } = [];
-    public Transform Transform = new();
 
     /// <summary>
     /// Get the parent GameObject
@@ -74,9 +73,6 @@ public class GameObject
         {
             collectChildren(this, result);
         }
-
-        Log.Debug(result.Count.ToString());
-
         return result.ToArray();
     }
 

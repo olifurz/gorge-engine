@@ -2,22 +2,24 @@ using System.Numerics;
 using Gorge.Core;
 using Raylib_cs;
 using Gorge.Services;
+using Jitter2.Dynamics;
 
 namespace Gorge.Game.Objects;
 
 public class Part : GameObject
 {
-    public bool Anchored = false;
     public Model Model;
     public enum PartType
     {
         Brick,
     }
-    public PartType type;
+    public PartType Type;
+    public RigidBody? RigidBody;
+    public Transform Transform = new();
     public Part(PartType type = PartType.Brick, Vector3? position = null, Quaternion? rotation = null, Vector3? scale = null)
     {
         Name = "Part";
-        this.type = type;
+        Type = type;
 
         position ??= new Vector3(0, 0, 0);
         rotation ??= Quaternion.Identity;
@@ -36,7 +38,7 @@ public class Part : GameObject
     /// </summary>
     public void RegenerateModel()
     {
-        switch (type)
+        switch (Type)
         {
             case PartType.Brick:
                 Mesh mesh = Raylib.GenMeshCube(1, 1, 1);

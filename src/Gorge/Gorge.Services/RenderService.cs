@@ -46,7 +46,7 @@ public class RenderService : BaseService
 
         Raylib.EndMode3D();
 
-        Raylib.DrawText(Raylib.GetFPS().ToString(), 10, 10, 20, Color.Black);
+        Raylib.DrawText($"FPS: {Raylib.GetFPS()} DT: {Math.Round(Raylib.GetFrameTime(), 4)}", 10, 10, 16, Color.Black);
         Raylib.EndDrawing();
     }
 
@@ -58,7 +58,7 @@ public class RenderService : BaseService
     /// Rendering Functions ///
     private void RenderPart(Part part)
     {
-        switch (part.type)
+        switch (part.Type)
         {
             case Part.PartType.Brick:
                 Transform.QuaternionToAxisAngle(part.Transform.Rotation, out var axis, out var angle);

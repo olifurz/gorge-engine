@@ -16,7 +16,7 @@ public class WorkspaceService : BaseService
     private PhysicsService? physics;
     private Player? localPlayer;
     public GameObject Workspace = new();
-    public Skybox Skybox;
+    public Skybox? Skybox;
     public override void Start()
     {
         base.Start();
@@ -28,12 +28,17 @@ public class WorkspaceService : BaseService
 
         var baseplate = new Part(Part.PartType.Brick, Vector3.Zero, Quaternion.Identity, new Vector3(16, 1, 16));
         baseplate.Name = "Baseplate";
-        baseplate.Anchored = true;
+        baseplate.Transform.Anchored = true;
         baseplate.SetParent(Workspace);
         AddObject(baseplate);
 
+        var testPart = new Part(Part.PartType.Brick, new Vector3(0, 15, 0));
+        testPart.Name = "TestPart";
+        testPart.Transform.Anchored = false;
+        testPart.SetParent(Workspace);
+        AddObject(testPart);
+
         localPlayer = new Player();
-        localPlayer.Start();
         localPlayer.SetParent(Workspace);
         AddObject(localPlayer);
 
