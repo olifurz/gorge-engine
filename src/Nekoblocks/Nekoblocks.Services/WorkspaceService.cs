@@ -13,7 +13,7 @@ public class WorkspaceService : BaseService
 {
     private GameService gameService = ServiceManager.GetService<GameService>();
     private Player? localPlayer;
-    public GameObject Workspace = new();
+    public Instance Workspace = new();
     public Skybox? Skybox;
     public override void Start()
     {

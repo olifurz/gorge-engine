@@ -7,17 +7,17 @@ using Nekoblocks.Services;
 namespace Nekoblocks.Game;
 
 /// <summary>
-/// Root game object
+/// Root instance
 /// </summary>
-public class GameObject
+public class Instance
 {
     private readonly GameService gameService;
     public int Id { get; internal set; }
     public string Name = "Unnamed Object";
-    public GameObject? Parent { get; internal set; }
-    public List<GameObject> Children { get; internal set; } = [];
+    public Instance? Parent { get; internal set; }
+    public List<Instance> Children { get; internal set; } = [];
 
-    public GameObject()
+    public Instance()
     {
         gameService = ServiceManager.GetService<GameService>();
 
@@ -25,7 +25,7 @@ public class GameObject
     }
 
     /// <summary>
-    /// Get the ID of the parent GameObject
+    /// Get the ID of the parent Instance
     /// </summary>
     public int? GetParentId()
     {
@@ -34,10 +34,10 @@ public class GameObject
 
 
     /// <summary>
-    /// Set the parent GameObject
+    /// Set the parent Instance
     /// </summary>
-    /// <param name="obj">GameObject to set</param>
-    public void SetParent(GameObject obj)
+    /// <param name="obj">Instance to set</param>
+    public void SetParent(Instance obj)
     {
         if (Parent != null)
             if (Parent.Children.Contains(this))
@@ -47,7 +47,7 @@ public class GameObject
     }
 
     /// <summary>
-    /// Set the parent GameObject via ID
+    /// Set the parent Instance via ID
     /// </summary>
     /// <param name="id">ID to search for</param>
     public void SetParent(int id)
@@ -59,23 +59,23 @@ public class GameObject
     }
 
     /// <summary>
-    /// Get a child of the GameObject via ID
+    /// Get a child of the Instance via ID
     /// </summary>
     /// <param name="id">ID to search for</param>
     /// <returns></returns>
-    public GameObject? GetChild(int id)
+    public Instance? GetChild(int id)
     {
         return Children?.FirstOrDefault(x => x.Id == id);
     }
 
     /// <summary>
-    /// Get array of children of this GameObject
+    /// Get array of children of this Instance
     /// </summary>
     /// <param name="recursive">Whether to recursively traverse through children</param>
     /// <returns>Array of children</returns>
-    public GameObject[] GetChildren(bool recursive = false)
+    public Instance[] GetChildren(bool recursive = false)
     {
-        List<GameObject> result = [];
+        List<Instance> result = [];
 
         result.AddRange(Children);
 
@@ -89,16 +89,16 @@ public class GameObject
     /// <summary>
     /// Helper to recursively collect all children for GetChildren()
     /// </summary>
-    private static void collectChildren(GameObject gameObject, List<GameObject> allChildren)
+    private static void collectChildren(Instance Instance, List<Instance> allChildren)
     {
-        foreach (var child in gameObject.Children)
+        foreach (var child in Instance.Children)
         {
             allChildren.Add(child);
             collectChildren(child, allChildren);
         }
     }
 
-    public void AddChild(GameObject child)
+    public void AddChild(Instance child)
     {
         Children.Add(child);
     }

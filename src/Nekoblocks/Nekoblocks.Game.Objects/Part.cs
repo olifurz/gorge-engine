@@ -6,7 +6,7 @@ using Jitter2.Dynamics;
 
 namespace Nekoblocks.Game.Objects;
 
-public class Part : GameObject
+public class Part : Instance
 {
     public Model Model;
     public enum PartType

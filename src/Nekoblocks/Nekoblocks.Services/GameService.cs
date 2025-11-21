@@ -10,13 +10,13 @@ public class GameService : BaseService
     // See TODO in BaseService.cs for more. If there isn't a warning then delete this
     // cause then we probably finally fixed the problem (or your IDE is broken)
 #pragma warning disable CS8618
-    public GameObject Root { get; private set; }
+    public Instance Root { get; private set; }
 #pragma warning restore CS8618
     private static int idCount = 0;
     public override void Start()
     {
         base.Start();
-        Root = new GameObject();
+        Root = new Instance();
     }
 
     public override void Update()
@@ -30,7 +30,7 @@ public class GameService : BaseService
     }
 
     /// <summary>
-    /// Get a unique ID for use with a GameObject
+    /// Get a unique ID for use with a Instance
     /// </summary>
     /// <returns></returns>
     public static int GetUniqueId()

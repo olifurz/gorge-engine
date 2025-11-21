@@ -30,6 +30,8 @@ public class PhysicsService : BaseService
 
     public override void Update()
     {
+        // TODO: Add Anchor support
+
         base.Update();
         var objects = workspaceService.Workspace.GetChildren();
         if (objects.Length == 0) return;
@@ -40,16 +42,14 @@ public class PhysicsService : BaseService
 
         foreach (var obj in objects)
         {
-            Log.Debug(obj.Name);
             switch (obj)
             {
                 case Part part:
-                    if (part.RigidBody == null || part.Transform.Anchored == true) return; // TODO NOW: Physics breaks when Anchored check is in place, WTF?
+                    if (part.RigidBody == null) break;
+                    part.RigidBody.MotionType = part.Transform.Anchored ? MotionType.Static : MotionType.Dynamic;
                     part.Transform.SetPosition(part.RigidBody.Position);
                     part.Transform.SetRotation(part.RigidBody.Orientation);
                     break;
-                default:
-                    return;
             }
         }
     }

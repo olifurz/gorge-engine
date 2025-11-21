@@ -9,10 +9,9 @@ namespace Nekoblocks.Game.Player;
 /// <summary>
 /// Local player class
 /// </summary>
-public class Player : GameObject
+public class Player : Instance
 {
     public Camera3D Camera;
-    public Character Character = new();
     private WorkspaceService workspaceService = ServiceManager.GetService<WorkspaceService>();
     public Player()
     {
@@ -26,9 +25,6 @@ public class Player : GameObject
             FovY = 80.0f,
             Projection = CameraProjection.Perspective
         };
-        Character.Transform.SetPosition(0, 10, 7);
-        Character.Transform.Anchored = false;
-        Character.SetParent(this);
     }
     public void Update()
     {
