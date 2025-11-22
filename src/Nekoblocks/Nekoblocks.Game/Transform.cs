@@ -1,13 +1,14 @@
 using System.Diagnostics;
 using System.Numerics;
+using Jitter2.Dynamics;
 
 namespace Nekoblocks.World;
 
 public class Transform
 {
-    public Vector3 Position { get; internal set; }
-    public Quaternion Rotation { get; internal set; }
-    public Vector3 Scale { get; internal set; }
+    public Vector3 Position { get; private set; }
+    public Quaternion Rotation { get; private set; }
+    public Vector3 Scale { get; private set; }
     public bool Anchored = false;
 
     public event Action<Transform>? PositionChanged;
@@ -80,25 +81,31 @@ public class Transform
         }
     }
 
-
-    public void SetPosition(Vector3 position)
+    /// <summary>
+    /// Set the position of the transform
+    /// </summary>
+    /// <param name="position"></param>
+    /// <param name="invokeEvent">A special bool used by the physics engine to disable invoking the PositionChanged event</param>
+    /// My hope is that I'm never allowed to write physics code again, cause this is one nasty hack.
+    public void SetPosition(Vector3 position, bool invokeEvent = true)
     {
-        var state = Anchored;
-        Anchored = true;
         Position = position;
-        PositionChanged?.Invoke(this);
-        Anchored = state;
+        if (invokeEvent == true) PositionChanged?.Invoke(this);
     }
     public void SetPosition(float x, float y, float z)
     {
         SetPosition(new Vector3(x, y, z));
     }
-    public void SetRotation(Quaternion rotation)
+
+    /// <summary>
+    /// Set the rotation of the transform
+    /// </summary>
+    /// <param name="rotation"></param>
+    /// <param name="invokeEvent">A special bool used by the physics engine to disable invoking the RotationChanged event</param>
+    public void SetRotation(Quaternion rotation, bool invokeEvent = true)
     {
-        var state = Anchored;
         Rotation = rotation;
-        RotationChanged?.Invoke(this);
-        Anchored = state;
+        if (invokeEvent == true) RotationChanged?.Invoke(this);
     }
     public void SetScale(Vector3 scale)
     {

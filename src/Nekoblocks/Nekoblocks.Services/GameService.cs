@@ -1,14 +1,15 @@
 using Nekoblocks.Core;
 using Nekoblocks.Game;
 
+namespace Nekoblocks.Services;
+
 /// <summary>
 /// Manages the currently loaded game 
 /// </summary>
 public class GameService : BaseService
 {
-    // CS8618 occurs here & I really don't want to have to mark it as nullable.
-    // See TODO in BaseService.cs for more. If there isn't a warning then delete this
-    // cause then we probably finally fixed the problem (or your IDE is broken)
+    // TODO: CS8618 occurs here & I really don't want to have to mark it as nullable.
+    // See comment in BaseService.cs for more.
 #pragma warning disable CS8618
     public Instance Root { get; private set; }
 #pragma warning restore CS8618

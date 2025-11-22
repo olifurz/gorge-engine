@@ -75,13 +75,8 @@ public class RenderService : BaseService
     {
         Rlgl.DisableBackfaceCulling();
         Rlgl.DisableDepthMask();
-        Raylib.DrawModel(skybox.model, Vector3.Zero, 1.0f, Color.White);
+        Raylib.DrawModel(skybox.Model, Vector3.Zero, 1.0f, Color.White);
         Rlgl.EnableBackfaceCulling();
         Rlgl.EnableDepthMask();
-    }
-
-    private void RenderSkybox()
-    {
-
     }
 }

@@ -7,13 +7,13 @@ namespace Nekoblocks.Game.Objects;
 
 public class Skybox
 {
-    public Model model;
+    public Model Model { get; private set; }
     ResourceService resourceService = ServiceManager.GetService<ResourceService>();
 
     public Skybox(string filename, bool useHdr)
     {
         Mesh cube = Raylib.GenMeshCube(1, 1, 1);
-        model = Raylib.LoadModelFromMesh(cube);
+        Model = Raylib.LoadModelFromMesh(cube);
 
         Shader shader = resourceService.GetShader("shaders.skybox.vs", "shaders.skybox.fs");
 
@@ -44,6 +44,7 @@ public class Skybox
             ShaderUniformDataType.Int
         );
 
+        Model model = Model;
         Raylib.SetMaterialShader(ref model, 0, ref shader);
 
         Texture2D panorama;

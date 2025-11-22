@@ -4,7 +4,6 @@ namespace Nekoblocks.Core;
 
 /// <summary>
 /// Manager for starting, updating and stopping services.
-/// If this breaks, the game's screwed
 /// </summary>
 public static class ServiceManager
 {

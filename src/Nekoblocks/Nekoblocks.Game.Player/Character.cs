@@ -8,5 +8,14 @@ public class Character : Part
     {
         Name = "Character";
         Transform.SetScale(4, 5, 1);
+        Transform.SetPosition(0, 30, 0);
+        Transparency = 0;
+        CanCollide = true;
+        Transform.Anchored = false;
+    }
+
+    public void Update()
+    {
+
     }
 }

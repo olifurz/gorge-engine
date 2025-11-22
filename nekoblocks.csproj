@@ -3,6 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
     <RootNamespace>nekoblocks</RootNamespace>
     <RuntimeIdentifiers>linux-x64;win-x64</RuntimeIdentifiers>
     <ImplicitUsings>enable</ImplicitUsings>

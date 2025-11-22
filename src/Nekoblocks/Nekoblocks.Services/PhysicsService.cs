@@ -20,7 +20,6 @@ public class PhysicsService : BaseService
 {
     public Jitter2.World world = new();
     WorkspaceService workspaceService = ServiceManager.GetService<WorkspaceService>();
-    GameService gameService = ServiceManager.GetService<GameService>();
     public override void Start()
     {
         base.Start();
@@ -30,16 +29,12 @@ public class PhysicsService : BaseService
 
     public override void Update()
     {
-        // TODO: Add Anchor support
-
-        // TODO: Add Anchor support
-
         base.Update();
-        var objects = workspaceService.Workspace.GetChildren();
+        var objects = workspaceService.Workspace.GetChildren(true);
         if (objects.Length == 0) return;
 
-        // TODO: Delta time acts strangely here, when the FPS is uncapped physics is incredibly slow.
-        // I wanna assume this is an issue with Jitter, unless the calculation is wrong here?
+        // TODO: When the first argument is 1/60, it doesn't work. Yet when running at 60fps, Raylib.GetFrameTime() returns
+        // the same exact value.
         world.Step(Raylib.GetFrameTime(), true);
 
         foreach (var obj in objects)
@@ -49,8 +44,9 @@ public class PhysicsService : BaseService
                 case Part part:
                     if (part.RigidBody == null) break;
                     part.RigidBody.MotionType = part.Transform.Anchored ? MotionType.Static : MotionType.Dynamic;
-                    part.Transform.SetPosition(part.RigidBody.Position);
-                    part.Transform.SetRotation(part.RigidBody.Orientation);
+
+                    part.Transform.SetPosition(part.RigidBody.Position, false);
+                    part.Transform.SetRotation(part.RigidBody.Orientation, false);
                     break;
             }
         }
@@ -67,26 +63,35 @@ public class PhysicsService : BaseService
         body.Orientation = part.Transform.Rotation;
         part.RigidBody = body;
 
-        RegenerateCollider(part);
+        AddCollider(part);
     }
 
     /// <summary>
-    /// Regenerate the collider (e.g if the scale changes)
+    /// Add a collider to a Part
     /// </summary>
-    /// <param name="part"></param>
-    public void RegenerateCollider(Part part)
+    public void AddCollider(Part part)
     {
         if (part.RigidBody == null) return;
-        for (int i = 0; i < part.RigidBody.Shapes.Count;)
-        {
-            part.RigidBody.RemoveShape(part.RigidBody.Shapes[i]);
-        }
+        RemoveCollider(part);
 
         switch (part.Type)
         {
             case Part.PartType.Brick:
                 part.RigidBody.AddShape(new BoxShape(part.Transform.Scale.X, part.Transform.Scale.Y, part.Transform.Scale.Z));
                 break;
+        }
+    }
+
+    /// <summary>
+    /// Remove a colider from a Part
+    /// </summary>
+    /// <param name="part"></param>
+    public void RemoveCollider(Part part)
+    {
+        if (part.RigidBody == null || part.RigidBody.Shapes.Count == 0) return;
+        for (int i = 0; i < part.RigidBody.Shapes.Count;)
+        {
+            part.RigidBody.RemoveShape(part.RigidBody.Shapes[i]);
         }
     }
     public override void Stop()

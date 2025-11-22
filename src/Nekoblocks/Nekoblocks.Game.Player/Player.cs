@@ -26,12 +26,11 @@ public class Player : Instance
             FovY = 80.0f,
             Projection = CameraProjection.Perspective
         };
-        Character.Transform.SetPosition(0, 10, 7);
-        Character.Transform.Anchored = false;
         Character.SetParent(this);
     }
     public void Update()
     {
         Raylib.UpdateCamera(ref Camera, CameraMode.Free);
+        Character.Update();
     }
 }

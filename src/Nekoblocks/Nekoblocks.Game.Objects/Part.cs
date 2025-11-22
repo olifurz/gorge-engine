@@ -6,33 +6,47 @@ using Jitter2.Dynamics;
 
 namespace Nekoblocks.Game.Objects;
 
+// TODO: This entire class feels like a mess in formatting.
 public class Part : Instance
 {
-    public Model Model;
     public enum PartType
     {
         Brick,
     }
-    public PartType Type;
+    public PartType Type { get; set; }
+    public Model Model { get; private set; }
+    public float Transparency { get; set; } = 0; // TODO: Only 1 and 0 is supported right now in render service
+
+    // Physics //
+    public readonly Transform Transform = new();
     public RigidBody? RigidBody;
-    public Transform Transform = new();
-    public float Transparency = 0; // TODO: Only 1 and 0 is supported right now in render service
-    public Part(PartType type = PartType.Brick, Vector3? position = null, Quaternion? rotation = null, Vector3? scale = null)
+
+    private bool canCollide;
+    public bool CanCollide
+    {
+        get => canCollide; set
+        {
+            canCollide = value;
+            UpdateCollider();
+        }
+    }
+
+    readonly PhysicsService physicsService = ServiceManager.GetService<PhysicsService>();
+    public Part(PartType type = PartType.Brick)
     {
         Name = "Part";
         Type = type;
+        CanCollide = true;
         SetParent(ServiceManager.GetService<WorkspaceService>().Workspace);
 
-        position ??= new Vector3(0, 0, 0);
-        rotation ??= Quaternion.Identity;
-        scale ??= new Vector3(4, 1, 2);
+        Transform.SetPosition(new Vector3(0, 0, 0));
+        Transform.SetRotation(Quaternion.Identity);
+        Transform.SetScale(new Vector3(4, 1, 2));
 
-        Transform.SetPosition(position.Value);
-        Transform.SetRotation(rotation.Value);
-        Transform.SetScale(scale.Value);
+        physicsService.AddBody(this);
 
-        ServiceManager.GetService<PhysicsService>().AddBody(this);
-
+        Transform.PositionChanged += t => RigidBody.Position = Transform.Position;
+        Transform.RotationChanged += t => RigidBody.Orientation = Transform.Rotation;
         Transform.ScaleChanged += t => RegenerateModel();
         RegenerateModel();
     }
@@ -40,7 +54,7 @@ public class Part : Instance
     /// <summary>
     /// Regenerate the Part's mesh, for example when the scale has been changed
     /// </summary>
-    public void RegenerateModel()
+    private void RegenerateModel()
     {
         var resourceService = ServiceManager.GetService<ResourceService>();
         switch (Type)
@@ -54,7 +68,8 @@ public class Part : Instance
         byte[] studImg = resourceService.GetResource("textures.stud.png");
         Texture2D texture = Raylib.LoadTextureFromImage(Raylib.LoadImageFromMemory(".png", studImg));
         Raylib.SetTextureFilter(texture, TextureFilter.Bilinear);
-        Raylib.SetMaterialTexture(ref Model, 0, MaterialMapIndex.Albedo, ref texture);
+        Model model = Model;
+        Raylib.SetMaterialTexture(ref model, 0, MaterialMapIndex.Albedo, ref texture);
 
         float[] tiling =
         [
@@ -69,6 +84,23 @@ public class Part : Instance
             Model.Materials[0].Shader = surfaceShader;
         }
 
-        ServiceManager.GetService<PhysicsService>().RegenerateCollider(this);
+        UpdateCollider();
     }
+
+    /// <summary>
+    /// Helper function for CanCollide, checks to see if a collider is necessary
+    /// </summary>
+    private void UpdateCollider()
+    {
+        if (canCollide == true)
+        {
+            physicsService.AddCollider(this);
+        }
+        else
+        {
+            physicsService.RemoveCollider(this);
+        }
+    }
+
+
 }

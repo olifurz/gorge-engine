@@ -11,16 +11,13 @@ namespace Nekoblocks.Game;
 /// </summary>
 public class Instance
 {
-    private readonly GameService gameService;
     public int Id { get; internal set; }
-    public string Name = "Unnamed Object";
+    public string Name { get; set; } = "Instance";
     public Instance? Parent { get; internal set; }
     public List<Instance> Children { get; internal set; } = [];
 
     public Instance()
     {
-        gameService = ServiceManager.GetService<GameService>();
-
         Id = GameService.GetUniqueId();
     }
 
