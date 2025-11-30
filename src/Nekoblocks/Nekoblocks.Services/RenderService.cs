@@ -67,8 +67,8 @@ public class RenderService : BaseService
         switch (part.Type)
         {
             case Part.PartType.Brick:
-                Transform.QuaternionToAxisAngle(part.Transform.Rotation, out var axis, out var angle);
-                Raylib.DrawModelEx(part.Model, part.Transform.Position, axis, angle, Vector3.One, Color.White);
+                Transform.EulerToAxisAngle(part.Transform.Rotation, out var axis, out var angle);
+                Raylib.DrawModelEx(part.Model, part.Transform.Position, axis, (float)angle, Vector3.One, Color.White);
                 break;
         }
     }

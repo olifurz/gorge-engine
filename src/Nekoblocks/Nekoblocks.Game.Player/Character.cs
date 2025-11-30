@@ -5,6 +5,7 @@ using Jitter2.LinearMath;
 using Nekoblocks.Core;
 using Nekoblocks.Game.Objects;
 using Nekoblocks.Services;
+using Raylib_cs;
 
 namespace Nekoblocks.Game.Player;
 
@@ -29,8 +30,9 @@ public class Character : Part
         Transform.SetPosition(0, 30, 0);
         Transparency = 1;
         CanCollide = true;
-        Transform.Anchored = false;
+        Transform.Anchored = false; // This doesn't seem to work properly?
 
+        // Keep character upright
         var upright = physicsService.world.CreateConstraint<HingeAngle>(RigidBody, physicsService.world.NullBody);
         upright.Initialize(JVector.UnitY, AngularLimit.Full);
 
@@ -54,6 +56,7 @@ public class Character : Part
                 case "LeftLeg":
                 case "RightLeg":
                     part.Value.Transform.SetScale(1, 2, 1);
+                    part.Value.Transform.SetOrigin(0, 1, 0);
                     break;
             }
         }
@@ -62,13 +65,27 @@ public class Character : Part
     public void StepWalkCycle()
     {
         walkCycle++;
-        if (walkCycle > 60) walkCycle = 0;
+        if (walkCycle > 30) walkCycle = 0;
 
-        var trans = BodyParts["LeftArm"].Transform;
-        var target = float.Lerp(-45, 45, walkCycle / 60);
-        trans.SetRotation(trans.Rotation.X, target, trans.Rotation.Z);
-        Log.Debug(target.ToString());
+        float angle;
 
+        if (walkCycle <= 15)
+        {
+            angle = float.Lerp(-20, 20, walkCycle / 15f);
+        }
+        else
+        {
+            angle = float.Lerp(20, -20, (walkCycle - 15) / 15f);
+        }
+
+        var leftArm = BodyParts["LeftArm"].Transform;
+        leftArm.SetRotation(leftArm.Rotation.X, leftArm.Rotation.Y, angle);
+        var rightArm = BodyParts["RightArm"].Transform;
+        rightArm.SetRotation(rightArm.Rotation.X, rightArm.Rotation.Y, -angle);
+        var leftLeg = BodyParts["LeftLeg"].Transform;
+        leftLeg.SetRotation(leftLeg.Rotation.X, leftLeg.Rotation.Y, -angle);
+        var rightLeg = BodyParts["RightLeg"].Transform;
+        rightLeg.SetRotation(rightLeg.Rotation.X, rightLeg.Rotation.Y, angle);
     }
 
     public void Update()
@@ -79,7 +96,6 @@ public class Character : Part
     private void UpdateCharacter()
     {
         BodyParts["Torso"].Transform.SetPosition(Transform.Position.X, Transform.Position.Y + 0.5f, Transform.Position.Z);
-        BodyParts["Torso"].Transform.SetRotation(Transform.Rotation);
         Vector3 origin = BodyParts["Torso"].Transform.Position;
         BodyParts["Head"].Transform.SetPosition(origin.X, origin.Y + 1.5f, origin.Z);
         BodyParts["LeftArm"].Transform.SetPosition(origin.X - 1.5f, origin.Y, origin.Z);

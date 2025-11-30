@@ -16,6 +16,7 @@ internal class Program
         }
         Raylib.SetConfigFlags(ConfigFlags.Msaa4xHint);
         Raylib.SetConfigFlags(ConfigFlags.ResizableWindow);
+        Raylib.SetTraceLogLevel(TraceLogLevel.Warning);
         Raylib.InitWindow(800, 600, "Nekoblocks");
         Raylib.SetTargetFPS(60);
 

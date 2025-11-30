@@ -45,8 +45,9 @@ public class PhysicsService : BaseService
                     if (part.RigidBody == null) break;
                     part.RigidBody.MotionType = part.Transform.Anchored ? MotionType.Static : MotionType.Dynamic;
 
+                    if (part.Transform.Anchored) return;
                     part.Transform.SetPosition(part.RigidBody.Position, false);
-                    part.Transform.SetRotation(part.RigidBody.Orientation, false);
+                    part.Transform.SetRotation(Transform.QuaternionToEuler(part.RigidBody.Orientation), false);
                     break;
             }
         }
@@ -60,7 +61,7 @@ public class PhysicsService : BaseService
     {
         RigidBody body = world.CreateRigidBody();
         body.Position = part.Transform.Position;
-        body.Orientation = part.Transform.Rotation;
+        body.Orientation = Quaternion.CreateFromYawPitchRoll(part.Transform.Rotation.X, part.Transform.Rotation.Y, part.Transform.Rotation.Z);
         part.RigidBody = body;
 
         AddCollider(part);

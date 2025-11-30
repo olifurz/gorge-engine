@@ -3,6 +3,8 @@ using Nekoblocks.Core;
 using Raylib_cs;
 using Nekoblocks.Services;
 using Jitter2.Dynamics;
+using System.Reflection;
+using System.Diagnostics;
 
 namespace Nekoblocks.Game.Objects;
 
@@ -45,8 +47,9 @@ public class Part : Instance
 
         physicsService.AddBody(this);
 
+        // TODO: I have no clue if this works correctly or not, physics service may override this.
         Transform.PositionChanged += t => RigidBody.Position = Transform.Position;
-        Transform.RotationChanged += t => RigidBody.Orientation = Transform.Rotation;
+        Transform.RotationChanged += t => RigidBody.Orientation = Quaternion.CreateFromYawPitchRoll(Transform.Rotation.X, Transform.Rotation.Y, Transform.Rotation.Z);
         Transform.ScaleChanged += t => RegenerateModel();
         RegenerateModel();
     }
@@ -101,6 +104,5 @@ public class Part : Instance
             physicsService.RemoveCollider(this);
         }
     }
-
 
 }

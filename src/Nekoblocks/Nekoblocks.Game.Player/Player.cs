@@ -88,7 +88,7 @@ public class Player : Instance
     private void UpdateMovement()
     {
         var body = Character.RigidBody;
-        isGrounded = Character.RigidBody.Island != null;
+        isGrounded = body.Island != null;
 
         var transform = Character.Transform;
         var rotation = Character.Transform.Rotation;
@@ -100,7 +100,7 @@ public class Player : Instance
         if (Raylib.IsKeyDown(KeyboardKey.W))
         {
             float targetRot = Rad2Deg(theta) / 2;
-            transform.SetRotation(MathF.Sin(targetRot), 0, 0, MathF.Cos(targetRot));
+            transform.SetRotation(targetRot, 0, 0);
             body.AddForce(new Vector3(0, 0, 50), true);
             Character.StepWalkCycle();
         }
